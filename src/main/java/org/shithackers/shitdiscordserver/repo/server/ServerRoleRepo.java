@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ServerRoleRepo extends JpaRepository<ServerRole, Integer> {
-    List<ServerRole> findByServerId(int serverId);
+    List<ServerRole> findAllByServerId(int serverId);
     ServerRole findByServerIdAndId(int serverId, int id);
 }

@@ -11,6 +11,5 @@ import java.util.Set;
 @Repository
 public interface ChatRepo extends JpaRepository<Chat, Integer> {
     Chat findByMembersInAndIsGroupFalse(Set<List<ChatMember>> members);
-    List<Chat> findAllByMembersInAndIsGroupFalse(Set<List<ChatMember>> members);
-    List<Chat> findByMembersIn(Set<List<ChatMember>> members);
+    List<Chat> findAllByMembersIn(Set<List<ChatMember>> members);
 }

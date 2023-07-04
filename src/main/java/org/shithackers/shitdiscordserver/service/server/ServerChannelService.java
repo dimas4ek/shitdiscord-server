@@ -40,20 +40,6 @@ public class ServerChannelService {
         return serverChannelRepo.findByServerAndId(server, channelId);
     }
     
-    public void sendMessage(int serverId, int serverChannelId, User sender, String message) {
-        Server server = serverRepo.findById(serverId).orElse(null);
-        ServerChannel serverChannel = serverChannelRepo.findByServerAndId(server, serverChannelId);
-        
-        ServerChannelMessage serverChannelMessage = new ServerChannelMessage();
-        serverChannelMessage.setServer(server);
-        serverChannelMessage.setServerChannel(serverChannel);
-        serverChannelMessage.setSender(sender);
-        serverChannelMessage.setMessage(message);
-        serverChannelMessage.setCreatedAt(new Date());
-        
-        serverChannelMessageRepo.save(serverChannelMessage);
-    }
-    
     public ServerChannelMessage sendMessageRest(int serverId, int serverChannelId, User sender, String message) {
         Server server = serverRepo.findById(serverId).orElse(null);
         ServerChannel serverChannel = serverChannelRepo.findByServerAndId(server, serverChannelId);
@@ -68,22 +54,6 @@ public class ServerChannelService {
         serverChannelMessageRepo.save(serverChannelMessage);
         
         return serverChannelMessage;
-    }
-    
-    public String getServerChannelNameById(int serverChannelId) {
-        ServerChannel serverChannel = serverChannelRepo.findById(serverChannelId).orElse(null);
-        if (serverChannel != null) {
-            return serverChannel.getName();
-        }
-        return null;
-    }
-    
-    public String getServerChannelId(Server server) {
-        List<ServerChannel> serverChannels = serverChannelRepo.findAllByServer(server);
-        if (serverChannels.isEmpty()) {
-            return null;
-        }
-        return String.valueOf(serverChannels.get(0).getId());
     }
     
     public ServerChannel createFirstServerChannel(Server server) {
@@ -105,24 +75,11 @@ public class ServerChannelService {
         return serverChannel;
     }
     
-    public List<ServerChannel> getServerChannels(Server server) {
-        return serverChannelRepo.findAllByServer(server);
-    }
-    
-    public void save(ServerChannel serverChannel) {
-        serverChannel.setCreatedAt(new Date());
-        serverChannelRepo.save(serverChannel);
-    }
-    
     public ServerChannel saveRest(ServerChannel serverChannel) {
         serverChannel.setCreatedAt(new Date());
         serverChannelRepo.save(serverChannel);
         
         return serverChannel;
-    }
-    
-    public String redirectToServerChannel(ServerChannel serverChannel) {
-        return "redirect:/channels/" + serverChannel.getServer().getId() + "/" + serverChannel.getId();
     }
     
     public void deleteServerChannel(ServerChannel serverChannel) {

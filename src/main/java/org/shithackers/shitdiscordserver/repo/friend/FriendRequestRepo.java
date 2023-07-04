@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public interface FriendRequestRepo extends JpaRepository<FriendRequest, Integer> {
-    List<FriendRequest> getFriendRequestsByReceiver(User receiver);
-    List<FriendRequest> getFriendRequestsBySenderAndReceiver(User sender, User receiver);
-    List<FriendRequest> getFriendRequestsBySender(User person);
+    List<FriendRequest> findAllByReceiver(User receiver);
+    List<FriendRequest> findAllBySenderAndReceiver(User sender, User receiver);
+    List<FriendRequest> findAllBySender(User person);
     List<FriendRequest> findAllBySenderIdOrReceiverId(int senderId, int receiverId);
 }

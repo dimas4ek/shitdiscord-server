@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface ServerRepo extends JpaRepository<Server, Integer> {
     List<Server> findAllByCreatorId(int creatorId);
-    List<Server> findByMembersPerson(User person);
+    List<Server> findAllByMembersPerson(User person);
 }

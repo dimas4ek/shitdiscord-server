@@ -33,20 +33,20 @@ public class RestMessageController {
         this.serverChannelService = serverChannelService;
     }
     
-    @GetMapping("/channels/me/{channelId}/messages")
-    public Map<String, Object> showRoomMessages(@PathVariable int channelId) {
+    @GetMapping("/chats/{chatId}/messages")
+    public Map<String, Object> showRoomMessages(@PathVariable int chatId) {
         Map<String, Object> map = new HashMap<>();
-        map.put("messages", chatService.getChatById(channelId).getMessages());
+        map.put("messages", chatService.getChatById(chatId).getMessages());
         return map;
     }
     
-    @PostMapping("/channels/me/{channelId}")
+    @PostMapping("/chats/{chatId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ChatMessage> postRoomMessage(@PathVariable int channelId, @RequestParam String message) {
-       return new ResponseEntity<>(chatMessageService.sendMessageRest(channelId, AuthUtils.getPerson(), message), HttpStatus.CREATED);
+    public ResponseEntity<ChatMessage> postRoomMessage(@PathVariable int chatId, @RequestParam String message) {
+       return new ResponseEntity<>(chatMessageService.sendMessageRest(chatId, AuthUtils.getPerson(), message), HttpStatus.CREATED);
     }
     
-    @PostMapping("/channels/{serverId}/{serverChannelId}")
+    @PostMapping("/servers/{serverId}/{serverChannelId}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ServerChannelMessage>
     postServerChannelMessage(@PathVariable int serverId,
@@ -55,14 +55,14 @@ public class RestMessageController {
         return new ResponseEntity<>(serverChannelService.sendMessageRest(serverId, serverChannelId, AuthUtils.getPerson(), message), HttpStatus.CREATED);
     }
     
-    @DeleteMapping("/channels/{serverId}/{serverChannelId}/{messageId}")
+    @DeleteMapping("/servers/{serverId}/{serverChannelId}/{messageId}")
     public ResponseEntity<?> deleteServerChannelMessage(@PathVariable int serverId, @PathVariable int serverChannelId, @PathVariable int messageId) {
         serverChannelService.deleteServerChannelMessage(serverId, serverChannelId, messageId);
         
         return ResponseEntity.ok("Message deleted");
     }
     
-    @GetMapping("/channels/{serverId}/{serverChannelId}/messages")
+    @GetMapping("/servers/{serverId}/{serverChannelId}/messages")
     @ResponseBody
     public Map<String, Object> serverChannelMessages(@PathVariable int serverId, @PathVariable int serverChannelId) {
         Server server = serverService.getServer(serverId);

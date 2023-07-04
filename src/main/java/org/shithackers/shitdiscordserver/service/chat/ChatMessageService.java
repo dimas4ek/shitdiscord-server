@@ -23,17 +23,6 @@ public class ChatMessageService {
         this.chatMessageRepo = chatMessageRepo;
         this.chatRepo = chatRepo;
     }
-
-    @Transactional
-    public void sendMessage(int channelId, User sender, String message) {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setChat(chatRepo.findById(channelId).orElse(null));
-        chatMessage.setSender(sender);
-        chatMessage.setMessage(message);
-        chatMessage.setCreatedAt(new Date());
-
-        chatMessageRepo.save(chatMessage);
-    }
     
     @Transactional
     public ChatMessage sendMessageRest(int channelId, User sender, String message) {
@@ -61,5 +50,4 @@ public class ChatMessageService {
         }
         return wsMessages;
     }
-
 }

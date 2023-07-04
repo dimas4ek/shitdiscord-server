@@ -1,7 +1,6 @@
 package org.shithackers.shitdiscordserver.service.server;
 
 import org.shithackers.shitdiscordserver.model.server.Server;
-import org.shithackers.shitdiscordserver.model.server.ServerChannel;
 import org.shithackers.shitdiscordserver.model.server.ServerMember;
 import org.shithackers.shitdiscordserver.repo.server.ServerMemberRepo;
 import org.shithackers.shitdiscordserver.repo.server.ServerRepo;
@@ -32,19 +31,6 @@ public class ServerService {
     }
     
     @Transactional
-    public void save(Server server) {
-        server.setCreator(AuthUtils.getPerson());
-        server.setCreatedAt(new Date());
-        serverRepo.save(server);
-        
-        ServerMember serverMember = new ServerMember();
-        serverMember.setServer(server);
-        serverMember.setPerson(AuthUtils.getPerson());
-        serverMember.setJoinDate(new Date());
-        serverMemberRepo.save(serverMember);
-    }
-    
-    @Transactional
     public Server saveRest(Server server) {
         server.setCreator(AuthUtils.getPerson());
         server.setCreatedAt(new Date());
@@ -59,12 +45,6 @@ public class ServerService {
         serverMemberRepo.save(serverMember);
         
         return server;
-    }
-    
-    public String redirectToServer(Server server) {
-        ServerChannel serverChannel = serverChannelService.createFirstServerChannel(server);
-        
-        return "redirect:/channels/" + server.getId() + "/" + serverChannel.getId();
     }
     
     public List<Server> getServerList() {

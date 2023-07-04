@@ -17,12 +17,4 @@ public class ServerChannelCategoryService {
     public ServerChannelCategory save(ServerChannelCategory serverChannelCategory) {
         return serverChannelCategoryRepo.save(serverChannelCategory);
     }
-    
-    public ServerChannelCategory findById(int id) {
-        return serverChannelCategoryRepo.findById(id).orElse(null);
-    }
-    
-    public void delete(int id) {
-        serverChannelCategoryRepo.deleteById(id);
-    }
 }

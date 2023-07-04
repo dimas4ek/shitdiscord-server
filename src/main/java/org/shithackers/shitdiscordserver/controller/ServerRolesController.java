@@ -18,27 +18,27 @@ public class ServerRolesController {
         this.serverRoleService = serverRoleService;
     }
     
-    @GetMapping("/channels/{serverId}/roles")
+    @GetMapping("/servers/{serverId}/roles")
     public List<ServerRole> showRoles(@PathVariable int serverId) {
         return serverRoleService.getServerRoles(serverId);
     }
     
-    @GetMapping("/channels/{serverId}/roles/{roleId}")
+    @GetMapping("/servers/{serverId}/roles/{roleId}")
     public ServerRole showRole(@PathVariable int roleId, @PathVariable int serverId) {
         return serverRoleService.showRole(serverId, roleId);
     }
     
-    @PostMapping("/channels/{serverId}/createNewRole")
+    @PostMapping("/servers/{serverId}/createNewRole")
     public ResponseEntity<?> createNewRole(@PathVariable int serverId, @RequestBody ServerRole serverRole) {
         return new ResponseEntity<>(serverRoleService.createRole(serverId, serverRole), HttpStatus.CREATED);
     }
     
-    @GetMapping("/channels/{serverId}/{serverMemberId}/roles")
+    @GetMapping("/servers/{serverId}/{serverMemberId}/roles")
     public Map<String, Object> showMemberRoles(@PathVariable int serverId, @PathVariable int serverMemberId) {
         return serverRoleService.showMemberRoles(serverId, serverMemberId);
     }
     
-    @PostMapping("/channels/{serverId}/{serverMemberId}/addRole")
+    @PostMapping("/servers/{serverId}/{serverMemberId}/addRole")
     public ResponseEntity<?> addRoleToMember(@PathVariable int serverId,
                                              @PathVariable int serverMemberId,
                                              @RequestParam("roleId") int roleId) {
@@ -50,7 +50,7 @@ public class ServerRolesController {
         );
     }
     
-    @DeleteMapping("/channels/{serverId}/{serverMemberId}/removeRole")
+    @DeleteMapping("/servers/{serverId}/{serverMemberId}/removeRole")
     public ResponseEntity<?> removeRoleFromMember(@PathVariable int serverId,
                                                   @PathVariable int serverMemberId,
                                                   @RequestParam("roleId") int roleId) {

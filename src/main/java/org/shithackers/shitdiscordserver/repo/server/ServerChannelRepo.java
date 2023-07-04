@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface ServerChannelRepo extends JpaRepository<ServerChannel, Integer> {
     ServerChannel findByServerAndId(Server server, int channelId);
-    List<ServerChannel> findServerChannelsByServer(Server server);
+    List<ServerChannel> findAllByServer(Server server);
 }

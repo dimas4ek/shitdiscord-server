@@ -79,21 +79,6 @@ public class ChatService {
         return null;
     }
     
-    public String createdChatGroup(List<String> selectedUsers) {
-        List<ChatMember> members = new ArrayList<>();
-        for (String selectedUser : selectedUsers) {
-            members.add(
-                chatMemberService.getChatMemberByPerson(
-                    peopleRepo.findByUsername(selectedUser).orElse(null)
-                )
-            );
-        }
-        
-        return String.valueOf(chatRepo.findByMembersInAndIsGroupFalse(
-            Collections.singleton(members)).getId()
-        );
-    }
-    
     @Transactional
     public void createChat(User friend1, User friend2) {
         Chat chat = new Chat();
@@ -132,60 +117,6 @@ public class ChatService {
             member.setPerson(person);
             chatMemberRepo.save(member);
         }
-    }
-    
-    @Transactional
-    public void createGroupChat(List<String> selectedUsers) {
-        Chat chat = new Chat();
-        List<ChatMember> members = new ArrayList<>();
-        for (String selectedUser : selectedUsers) {
-            members.add(chatMemberService.getChatMemberByUsername(selectedUser));
-        }
-        chat.setMembers(members);
-        chat.setGroup(true);
-        chat.setCreatedAt(new Date());
-        
-        chatRepo.save(chat);
-    }
-    
-    /*public String getChatNameByMembers(List<ChatMember> members) {
-        Chat chat = chatRepo.findByMembersInAndIsGroupFalse(Collections.singleton(members));
-        if (chat != null && chat.isGroup()) {
-            return getGroupName(chat);
-        }
-        return getName(chat);
-    }*/
-    
-    public String getChatNameById(int chatId) {
-        Chat chat = chatRepo.findById(chatId).orElse(null);
-        if (chat != null && chat.isGroup()) {
-            return getGroupName(chat);
-        }
-        return getName(chat);
-    }
-    
-    public String getGroupName(Chat chat) {
-        StringBuilder groupName = new StringBuilder();
-        for (ChatMember member : chat.getMembers()) {
-            groupName.append(member.getPerson().getUsername());
-            if (member != chat.getMembers().get(chat.getMembers().size() - 1)) {
-                groupName.append(" ,");
-            }
-        }
-        return groupName.toString();
-    }
-    
-    private String getName(Chat chat) {
-        if (chat != null) {
-            if (!chat.isGroup()) {
-                for (ChatMember member : chat.getMembers()) {
-                    if (member.getPerson() != AuthUtils.getPerson()) {
-                        return member.getPerson().getUsername();
-                    }
-                }
-            }
-        }
-        return null;
     }
     
     public Chat getChatById(int chatId) {

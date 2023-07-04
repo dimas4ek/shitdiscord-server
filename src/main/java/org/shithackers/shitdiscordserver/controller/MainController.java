@@ -107,9 +107,14 @@ public class MainController {
         return ResponseEntity.ok("Friend " + peopleService.getOneUser(friendId).getUsername() + " removed successfully.");
     }
     
-    @GetMapping("/channels/me/{channelId}")
-    public Map<String, Object> getChat(@PathVariable("channelId") int channelId) {
-        Chat chat = chatService.getChatById(channelId);
+    @GetMapping("/chats")
+    public List<Chat> getChats() {
+        return chatService.getChannelList();
+    }
+    
+    @GetMapping("/chats/{chatId}")
+    public Map<String, Object> getChat(@PathVariable("chatId") int chatId) {
+        Chat chat = chatService.getChatById(chatId);
         Map<String, Object> map = new HashMap<>();
         map.put("chat", chat);
         

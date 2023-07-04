@@ -40,7 +40,7 @@ public class ServerController {
         return null;
     }
 
-    @GetMapping("/channels/{serverId}")
+    @GetMapping("/servers/{serverId}")
     public Map<String, Object> showServer(@PathVariable int serverId) {
         Server server = serverService.getServer(serverId);
 
@@ -88,7 +88,7 @@ public class ServerController {
             .body("Server not found");
     }
     
-    @DeleteMapping("/channels/{serverId}")
+    @DeleteMapping("/servers/{serverId}")
     public ResponseEntity<String> deleteServer(@PathVariable int serverId) {
         Server server = serverService.getServer(serverId);
         serverService.deleteServer(server);
@@ -109,7 +109,7 @@ public class ServerController {
         return new ResponseEntity<>(serverChannelCategoryService.save(serverChannelCategory), HttpStatus.CREATED);
     }
     
-    @DeleteMapping("/channels/{serverId}/{serverChannelId}")
+    @DeleteMapping("/servers/{serverId}/{serverChannelId}")
     public ResponseEntity<String> deleteServerChannel(@PathVariable int serverChannelId, @PathVariable int serverId) {
         Server server = serverService.getServer(serverId);
         ServerChannel serverChannel = serverChannelService.getServerChannel(server, serverChannelId);

@@ -6,7 +6,6 @@ import org.shithackers.shitdiscordserver.model.user.User;
 import org.shithackers.shitdiscordserver.repo.friend.FriendListRepo;
 import org.shithackers.shitdiscordserver.repo.friend.FriendRequestRepo;
 import org.shithackers.shitdiscordserver.repo.user.UserRepo;
-import org.shithackers.shitdiscordserver.service.chat.ChatMemberService;
 import org.shithackers.shitdiscordserver.service.chat.ChatService;
 import org.shithackers.shitdiscordserver.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +23,13 @@ public class FriendService {
     private final FriendRequestRepo friendRequestRepo;
     private final UserRepo peopleRepo;
     private final ChatService chatService;
-    private final ChatMemberService chatMemberService;
     
     @Autowired
-    public FriendService(FriendListRepo friendRepo, FriendRequestRepo friendRequestRepo, UserRepo peopleRepo, ChatService chatService, ChatMemberService chatMemberService) {
+    public FriendService(FriendListRepo friendRepo, FriendRequestRepo friendRequestRepo, UserRepo peopleRepo, ChatService chatService) {
         this.friendListRepo = friendRepo;
         this.friendRequestRepo = friendRequestRepo;
         this.peopleRepo = peopleRepo;
         this.chatService = chatService;
-        this.chatMemberService = chatMemberService;
     }
     
     public List<User> getFriendList() throws SQLException {
@@ -96,10 +93,6 @@ public class FriendService {
         friendRequestRepo.save(request);
     }
     
-    public List<FriendRequest> getIncomingFriendRequestList() {
-        return friendRequestRepo.findAllByReceiver(AuthUtils.getPerson());
-    }
-    
     @Transactional
     public void acceptFriendRequest(int requestId) {
         FriendRequest request = friendRequestRepo.findById(requestId).orElse(null);
@@ -131,10 +124,6 @@ public class FriendService {
             }
         }
         return false;
-    }
-    
-    public List<FriendRequest> getOutgoingFriendRequestList() {
-        return friendRequestRepo.findAllBySender(AuthUtils.getPerson());
     }
     
     public void cancelFriendRequest(int requestId) {

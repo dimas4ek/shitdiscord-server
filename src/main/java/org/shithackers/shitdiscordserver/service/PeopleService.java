@@ -13,10 +13,8 @@ import org.shithackers.shitdiscordserver.repo.friend.FriendRequestRepo;
 import org.shithackers.shitdiscordserver.repo.server.ServerChannelMessageRepo;
 import org.shithackers.shitdiscordserver.repo.server.ServerMemberRepo;
 import org.shithackers.shitdiscordserver.repo.server.ServerRepo;
-import org.shithackers.shitdiscordserver.repo.user.RoleRepo;
 import org.shithackers.shitdiscordserver.repo.user.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,11 +29,9 @@ public class PeopleService {
     private final ServerRepo serverRepo;
     private final ServerMemberRepo serverMemberRepo;
     private final ServerChannelMessageRepo serverChannelMessageRepo;
-    private final RoleRepo roleRepo;
-    private final PasswordEncoder encoder;
     
     @Autowired
-    public PeopleService(UserRepo userRepo, ChatMessageRepo chatMessageRepo, FriendListRepo friendListRepo, FriendRequestRepo friendRequestRepo, ServerRepo serverRepo, ServerMemberRepo serverMemberRepo, ServerChannelMessageRepo serverChannelMessageRepo, RoleRepo roleRepo, PasswordEncoder encoder) {
+    public PeopleService(UserRepo userRepo, ChatMessageRepo chatMessageRepo, FriendListRepo friendListRepo, FriendRequestRepo friendRequestRepo, ServerRepo serverRepo, ServerMemberRepo serverMemberRepo, ServerChannelMessageRepo serverChannelMessageRepo) {
         this.userRepo = userRepo;
         this.chatMessageRepo = chatMessageRepo;
         this.friendListRepo = friendListRepo;
@@ -43,8 +39,6 @@ public class PeopleService {
         this.serverRepo = serverRepo;
         this.serverMemberRepo = serverMemberRepo;
         this.serverChannelMessageRepo = serverChannelMessageRepo;
-        this.roleRepo = roleRepo;
-        this.encoder = encoder;
     }
     
     public List<User> getAllUsers() {
@@ -53,13 +47,6 @@ public class PeopleService {
     
     public User getOneUser(int id) {
         return userRepo.findById(id).orElse(null);
-    }
-    
-    @Transactional
-    public void edit(int id, User user) {
-        user.setId(id);
-        
-        userRepo.save(user);
     }
     
     @Transactional
@@ -91,13 +78,5 @@ public class PeopleService {
         //поместить туда юзера
         //заменить отправителя сообщений
         userRepo.deleteById(personId);
-    }
-    
-    public User getOneUser(String username) {
-        return userRepo.findByUsername(username).get();
-    }
-    
-    public boolean isExists(String username) {
-        return userRepo.findByUsername(username).isPresent();
     }
 }

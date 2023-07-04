@@ -3,8 +3,6 @@ package org.shithackers.shitdiscordserver.security;
 import org.shithackers.shitdiscordserver.security.jwt.AuthEntryPointJwt;
 import org.shithackers.shitdiscordserver.security.jwt.JwtFilter;
 import org.shithackers.shitdiscordserver.security.services.UserDetailsServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +23,6 @@ public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
     
-    private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
-    
     @Autowired
     public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
         this.userDetailsService = userDetailsService;
@@ -42,15 +38,7 @@ public class WebSecurityConfig {
                                        auth.requestMatchers("/api/v1/auth/**").permitAll()
                                            .requestMatchers("/app").permitAll()
                                            .anyRequest().authenticated()
-            )
-            /*.logout(logout -> logout.logoutUrl("/api/v1/auth/logout")
-                .logoutSuccessHandler((request, response, authentication) -> {
-                    try {
-                        request.logout();
-                    } catch (ServletException e) {
-                        logger.error(e.getMessage());
-                    }
-                }))*/;
+            );
         
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
