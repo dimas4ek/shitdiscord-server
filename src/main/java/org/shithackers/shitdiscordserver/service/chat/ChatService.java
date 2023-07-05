@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ChatService {
@@ -31,12 +28,24 @@ public class ChatService {
         this.chatMemberRepo = chatMemberRepo;
     }
     
-    public List<Chat> getChannelList() {
-        return chatRepo.findAllByMembersIn(
-            Collections.singleton(
-                List.of(chatMemberService.getChatMemberByPerson(AuthUtils.getPerson()))
-            )
-        );
+    public List<Map<String, Object>> getChats() {
+        List<Chat> chats = chatRepo.findAllByMembersPerson(AuthUtils.getPerson());
+        List<Map<String, Object>> chatList = new ArrayList<>();
+        
+        if(chats != null) {
+            chats.forEach(server -> {
+                Map<String, Object> chatMap = new LinkedHashMap<>();
+                chatMap.put("id", server.getId());
+                chatMap.put("members", server.getMembers()
+                    .stream().map(chatMember -> chatMember.getPerson().getUsername()));
+                
+                chatList.add(chatMap);
+            });
+            
+            return chatList;
+        }
+        
+        return null;
     }
     
     public boolean chatExists(User selectedUser) {

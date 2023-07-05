@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/servers/{serverId}")
 public class ServerRolesController {
     private final ServerRoleService serverRoleService;
     
@@ -18,30 +18,35 @@ public class ServerRolesController {
         this.serverRoleService = serverRoleService;
     }
     
-    @GetMapping("/servers/{serverId}/roles")
+    @GetMapping("/roles")
     public List<ServerRole> showRoles(@PathVariable int serverId) {
         return serverRoleService.getServerRoles(serverId);
     }
     
-    @GetMapping("/servers/{serverId}/roles/{roleId}")
-    public ServerRole showRole(@PathVariable int roleId, @PathVariable int serverId) {
-        return serverRoleService.showRole(serverId, roleId);
-    }
-    
-    @PostMapping("/servers/{serverId}/createNewRole")
+    @PostMapping("/roles")
     public ResponseEntity<?> createNewRole(@PathVariable int serverId, @RequestBody ServerRole serverRole) {
         return new ResponseEntity<>(serverRoleService.createRole(serverId, serverRole), HttpStatus.CREATED);
     }
     
-    @GetMapping("/servers/{serverId}/{serverMemberId}/roles")
+    @GetMapping("/roles/{roleId}")
+    public ServerRole showRole(@PathVariable int roleId, @PathVariable int serverId) {
+        return serverRoleService.showRole(serverId, roleId);
+    }
+    
+    @GetMapping("/roles/{roleId}/members")
+    public Map<String, Object> showMembersByRole(@PathVariable int roleId, @PathVariable int serverId) {
+        return serverRoleService.showMembersByRole(serverId, roleId);
+    }
+    
+    @GetMapping("/{serverMemberId}/roles")
     public Map<String, Object> showMemberRoles(@PathVariable int serverId, @PathVariable int serverMemberId) {
         return serverRoleService.showMemberRoles(serverId, serverMemberId);
     }
     
-    @PostMapping("/servers/{serverId}/{serverMemberId}/addRole")
+    @PutMapping("/{serverMemberId}/roles/{roleId}")
     public ResponseEntity<?> addRoleToMember(@PathVariable int serverId,
                                              @PathVariable int serverMemberId,
-                                             @RequestParam("roleId") int roleId) {
+                                             @PathVariable int roleId) {
         serverRoleService.addRoleToMember(serverId, serverMemberId, roleId);
         
         return new ResponseEntity<>(
@@ -50,10 +55,10 @@ public class ServerRolesController {
         );
     }
     
-    @DeleteMapping("/servers/{serverId}/{serverMemberId}/removeRole")
+    @DeleteMapping("/{serverMemberId}/roles/{roleId}")
     public ResponseEntity<?> removeRoleFromMember(@PathVariable int serverId,
                                                   @PathVariable int serverMemberId,
-                                                  @RequestParam("roleId") int roleId) {
+                                                  @PathVariable int roleId) {
         serverRoleService.removeRoleFromMember(serverId, serverMemberId, roleId);
         
         return ResponseEntity.ok(

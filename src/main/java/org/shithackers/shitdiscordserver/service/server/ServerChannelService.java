@@ -56,7 +56,7 @@ public class ServerChannelService {
         return serverChannelMessage;
     }
     
-    public ServerChannel createFirstServerChannel(Server server) {
+    public void createFirstServerChannel(Server server) {
         ServerChannel serverChannel = new ServerChannel();
         
         ServerChannelCategory serverChannelCategory = new ServerChannelCategory();
@@ -72,7 +72,6 @@ public class ServerChannelService {
         
         serverChannelRepo.save(serverChannel);
         
-        return serverChannel;
     }
     
     public ServerChannel saveRest(ServerChannel serverChannel) {

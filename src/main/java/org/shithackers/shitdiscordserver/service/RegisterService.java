@@ -2,7 +2,7 @@ package org.shithackers.shitdiscordserver.service;
 
 import org.shithackers.shitdiscordserver.model.user.Role;
 import org.shithackers.shitdiscordserver.model.user.User;
-import org.shithackers.shitdiscordserver.payload.request.RegisterRequest;
+import org.shithackers.shitdiscordserver.payload.request.auth.RegisterRequest;
 import org.shithackers.shitdiscordserver.repo.user.RoleRepo;
 import org.shithackers.shitdiscordserver.repo.user.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;

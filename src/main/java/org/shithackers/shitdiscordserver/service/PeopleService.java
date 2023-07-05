@@ -1,5 +1,6 @@
 package org.shithackers.shitdiscordserver.service;
 
+import org.shithackers.shitdiscordserver.model.chat.Chat;
 import org.shithackers.shitdiscordserver.model.chat.ChatMessage;
 import org.shithackers.shitdiscordserver.model.friend.FriendList;
 import org.shithackers.shitdiscordserver.model.friend.FriendRequest;
@@ -8,6 +9,7 @@ import org.shithackers.shitdiscordserver.model.server.ServerChannelMessage;
 import org.shithackers.shitdiscordserver.model.server.ServerMember;
 import org.shithackers.shitdiscordserver.model.user.User;
 import org.shithackers.shitdiscordserver.repo.chat.ChatMessageRepo;
+import org.shithackers.shitdiscordserver.repo.chat.ChatRepo;
 import org.shithackers.shitdiscordserver.repo.friend.FriendListRepo;
 import org.shithackers.shitdiscordserver.repo.friend.FriendRequestRepo;
 import org.shithackers.shitdiscordserver.repo.server.ServerChannelMessageRepo;
@@ -18,11 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
 public class PeopleService {
     private final UserRepo userRepo;
+    private final ChatRepo chatRepo;
     private final ChatMessageRepo chatMessageRepo;
     private final FriendListRepo friendListRepo;
     private final FriendRequestRepo friendRequestRepo;
@@ -31,8 +35,9 @@ public class PeopleService {
     private final ServerChannelMessageRepo serverChannelMessageRepo;
     
     @Autowired
-    public PeopleService(UserRepo userRepo, ChatMessageRepo chatMessageRepo, FriendListRepo friendListRepo, FriendRequestRepo friendRequestRepo, ServerRepo serverRepo, ServerMemberRepo serverMemberRepo, ServerChannelMessageRepo serverChannelMessageRepo) {
+    public PeopleService(UserRepo userRepo, ChatRepo chatRepo, ChatMessageRepo chatMessageRepo, FriendListRepo friendListRepo, FriendRequestRepo friendRequestRepo, ServerRepo serverRepo, ServerMemberRepo serverMemberRepo, ServerChannelMessageRepo serverChannelMessageRepo) {
         this.userRepo = userRepo;
+        this.chatRepo = chatRepo;
         this.chatMessageRepo = chatMessageRepo;
         this.friendListRepo = friendListRepo;
         this.friendRequestRepo = friendRequestRepo;

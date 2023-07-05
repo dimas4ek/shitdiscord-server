@@ -2,8 +2,8 @@ package org.shithackers.shitdiscordserver.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.shithackers.shitdiscordserver.payload.request.LoginRequest;
-import org.shithackers.shitdiscordserver.payload.request.RegisterRequest;
+import org.shithackers.shitdiscordserver.payload.request.auth.LoginRequest;
+import org.shithackers.shitdiscordserver.payload.request.auth.RegisterRequest;
 import org.shithackers.shitdiscordserver.payload.response.MessageResponse;
 import org.shithackers.shitdiscordserver.payload.response.UserInfoResponse;
 import org.shithackers.shitdiscordserver.repo.user.UserRepo;
@@ -31,7 +31,6 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final RegisterService registerService;
     private final UserRepo userRepo;
-    
     private final JwtUtils jwtUtils;
     
     @Autowired
@@ -64,8 +63,7 @@ public class AuthController {
                                            userDetails.getUsername(),
                                            userDetails.getEmail(),
                                            roles,
-                                           token
-                      )
+                                           token)
                 );
         } catch (BadCredentialsException e) {
             return ResponseEntity.badRequest()

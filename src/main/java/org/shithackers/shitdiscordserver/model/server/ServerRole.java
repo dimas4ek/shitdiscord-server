@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "server_roles")
@@ -29,6 +30,15 @@ public class ServerRole {
     @JoinColumn(name = "server_id", referencedColumnName = "id")
     private Server server;
     
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private List<ServerMember> members;
+    
+    @ManyToMany(targetEntity = ServerRolePermission.class, cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "server_roles_permissions",
+        joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    Set<ServerRolePermission> permissions;
 }

@@ -1,4 +1,4 @@
-package org.shithackers.shitdiscordserver.payload.request;
+package org.shithackers.shitdiscordserver.payload.request.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

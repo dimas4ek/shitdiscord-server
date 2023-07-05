@@ -33,7 +33,7 @@ public class ServerController {
     
     
     @GetMapping("/servers")
-    public List<Server> serverList() {
+    public List<Map<String, Object>> serverList() {
         if(AuthUtils.checkLoggedIn()) {
             return serverService.getServerList();
         }

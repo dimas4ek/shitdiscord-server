@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ServerService {
@@ -47,9 +45,25 @@ public class ServerService {
         return server;
     }
     
-    public List<Server> getServerList() {
-        return new ArrayList<>(serverRepo.findAllByMembersPerson(AuthUtils.getPerson()));
+    public List<Map<String, Object>> getServerList() {
+        List<Server> servers = serverRepo.findAllByMembersPerson(AuthUtils.getPerson());
+        List<Map<String, Object>> serverList = new ArrayList<>();
+        
+        if(servers != null) {
+            servers.forEach(server -> {
+                Map<String, Object> serverMap = new LinkedHashMap<>();
+                serverMap.put("id", server.getId());
+                serverMap.put("name", server.getName());
+                
+                serverList.add(serverMap);
+            });
+            
+            return serverList;
+        }
+        
+        return null;
     }
+    
     
     public List<ServerMember> getServerMemberList(Server server) {
         return serverMemberRepo.findAllByServerId(server.getId());

@@ -1,7 +1,9 @@
 package org.shithackers.shitdiscordserver.controller;
 
+import org.shithackers.shitdiscordserver.model.chat.Chat;
 import org.shithackers.shitdiscordserver.model.user.User;
 import org.shithackers.shitdiscordserver.service.PeopleService;
+import org.shithackers.shitdiscordserver.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +25,11 @@ public class PeopleController {
     @GetMapping()
     public List<User> getUsers() {
         return userService.getAllUsers();
+    }
+    
+    @GetMapping("/user")
+    public User currentUser() {
+        return AuthUtils.getPerson();
     }
 
     @GetMapping("/{id}")
