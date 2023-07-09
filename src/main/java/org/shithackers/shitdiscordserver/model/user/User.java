@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +48,9 @@ public class User {
     @NotBlank
     @Size(max = 120)
     private String password;
+    
+    @Column(name = "join_date")
+    private Date joinDate;
     
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

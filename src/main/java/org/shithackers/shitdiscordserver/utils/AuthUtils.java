@@ -22,21 +22,24 @@ public class AuthUtils {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken);
     }
-
+    
     public static int getPersonId() {
         if (checkLoggedIn()) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             UserDetailsImpl personDetails = (UserDetailsImpl) authentication.getPrincipal();
-
+            
             return personDetails.getId();
-        } else
-            return 0;
+        }
+        return 0;
     }
-
+    
     public static User getPerson() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl personDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        return peopleRepo.findById(personDetails.getId()).orElse(null);
+        if (checkLoggedIn()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserDetailsImpl personDetails = (UserDetailsImpl) authentication.getPrincipal();
+            
+            return peopleRepo.findById(personDetails.getId()).orElse(null);
+        }
+        return null;
     }
 }

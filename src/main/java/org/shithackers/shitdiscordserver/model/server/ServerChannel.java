@@ -26,6 +26,7 @@ public class ServerChannel {
     @JoinColumn(name = "server_id", referencedColumnName = "id")
     private Server server;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "serverChannel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServerChannelMessage> serverChannelMessages;
 

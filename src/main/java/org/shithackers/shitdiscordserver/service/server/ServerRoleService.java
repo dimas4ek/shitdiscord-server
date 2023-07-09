@@ -31,16 +31,32 @@ public class ServerRoleService {
         this.serverRolePermissionRepo = serverRolePermissionRepo;
     }
     
-    public List<ServerRole> getServerRoles(int serverId) {
-        return serverRoleRepo.findAllByServerId(serverId);
+    public List<Map<String, Object>> getServerRoles(int serverId) {
+        Server server = serverRepo.findById(serverId).orElse(null);
+        if (server != null) {
+            return serverRoleRepo.findAllByServerId(serverId).stream()
+                .map(role -> {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("id", role.getId());
+                    map.put("name", role.getName());
+                    map.put("color", role.getColor());
+                    map.put("permissions", getRolePermissions(serverId, role.getId()));
+                    return map;
+                })
+                .collect(Collectors.toList());
+        }
+        return null;
     }
     
     @Transactional
     public ServerRole createRole(int serverId, ServerRole serverRole) {
-        serverRole.setServer(serverRepo.findById(serverId).orElse(null));
-        serverRoleRepo.save(serverRole);
-        
-        return serverRole;
+        Server server = serverRepo.findById(serverId).orElse(null);
+        if (server != null) {
+            serverRole.setServer(server);
+            serverRoleRepo.save(serverRole);
+            return serverRole;
+        }
+        return null;
     }
     
     public ServerRole showRole(int serverId, int roleId) {

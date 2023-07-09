@@ -36,7 +36,7 @@ public class ServerMember {
     )
     private List<ServerRole> roles;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private User person;
 

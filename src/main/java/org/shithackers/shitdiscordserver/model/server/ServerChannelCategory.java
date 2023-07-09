@@ -1,5 +1,6 @@
 package org.shithackers.shitdiscordserver.model.server;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,12 +20,13 @@ public class ServerChannelCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
-    @OneToOne(fetch = FetchType.LAZY)
+    private String name;
+    
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_id", referencedColumnName = "id")
     private Server server;
     
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<ServerChannel> serverChannel;
-    
-    private String name;
+    private List<ServerChannel> serverChannels;
 }

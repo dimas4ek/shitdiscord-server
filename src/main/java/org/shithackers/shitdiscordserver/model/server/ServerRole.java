@@ -34,7 +34,7 @@ public class ServerRole {
     @ManyToMany(mappedBy = "roles")
     private List<ServerMember> members;
     
-    @ManyToMany(targetEntity = ServerRolePermission.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = ServerRolePermission.class)
     @JoinTable(
         name = "server_roles_permissions",
         joinColumns = @JoinColumn(name = "role_id"),

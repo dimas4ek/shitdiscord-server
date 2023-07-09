@@ -1,6 +1,5 @@
 package org.shithackers.shitdiscordserver.controller;
 
-import org.shithackers.shitdiscordserver.model.chat.Chat;
 import org.shithackers.shitdiscordserver.model.user.User;
 import org.shithackers.shitdiscordserver.service.PeopleService;
 import org.shithackers.shitdiscordserver.utils.AuthUtils;

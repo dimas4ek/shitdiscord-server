@@ -1,6 +1,5 @@
 package org.shithackers.shitdiscordserver.controller;
 
-import org.shithackers.shitdiscordserver.model.server.ServerRolePermission;
 import org.shithackers.shitdiscordserver.payload.request.ServerRolePermissionRequest;
 import org.shithackers.shitdiscordserver.service.server.ServerRoleService;
 import org.springframework.http.HttpStatus;

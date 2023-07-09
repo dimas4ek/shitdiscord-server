@@ -1,6 +1,5 @@
 package org.shithackers.shitdiscordserver.service;
 
-import org.shithackers.shitdiscordserver.model.chat.Chat;
 import org.shithackers.shitdiscordserver.model.chat.ChatMessage;
 import org.shithackers.shitdiscordserver.model.friend.FriendList;
 import org.shithackers.shitdiscordserver.model.friend.FriendRequest;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service

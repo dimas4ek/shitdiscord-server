@@ -1,7 +1,6 @@
 package org.shithackers.shitdiscordserver.repo.server;
 
 import org.shithackers.shitdiscordserver.model.server.ServerRolePermission;
-import org.shithackers.shitdiscordserver.model.user.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

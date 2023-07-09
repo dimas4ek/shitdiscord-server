@@ -16,16 +16,34 @@ public class ServerService {
     private final ServerRepo serverRepo;
     private final ServerChannelService serverChannelService;
     private final ServerMemberRepo serverMemberRepo;
+    private final ServerRoleService serverRoleService;
     
     @Autowired
-    public ServerService(ServerRepo serverRepo, ServerChannelService serverChannelService, ServerMemberRepo serverMemberRepo) {
+    public ServerService(ServerRepo serverRepo, ServerChannelService serverChannelService, ServerMemberRepo serverMemberRepo, ServerRoleService serverRoleService) {
         this.serverRepo = serverRepo;
         this.serverChannelService = serverChannelService;
         this.serverMemberRepo = serverMemberRepo;
+        this.serverRoleService = serverRoleService;
     }
     
     public Server getServer(int serverId) {
         return serverRepo.findById(serverId).orElse(null);
+    }
+    
+    public Map<String, Object> getServerInfo(int serverId) {
+        Server server = serverRepo.findById(serverId).orElse(null);
+        if (server != null) {
+            Map<String, Object> serverMap = new LinkedHashMap<>();
+            serverMap.put("id", server.getId());
+            serverMap.put("name", server.getName());
+            serverMap.put("creator", server.getCreator());
+            serverMap.put("members", serverMemberRepo.findAllByServerId(serverId));
+            serverMap.put("channels", serverChannelService.getServerChannels(serverId));
+            serverMap.put("roles", serverRoleService.getServerRoles(serverId));
+            serverMap.put("createdAt", server.getCreatedAt());
+            return serverMap;
+        }
+        return null;
     }
     
     @Transactional

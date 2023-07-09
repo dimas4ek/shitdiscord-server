@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.shithackers.shitdiscordserver.model.user.Role;
 
 import java.util.List;
 

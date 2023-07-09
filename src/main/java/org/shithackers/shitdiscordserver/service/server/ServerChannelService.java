@@ -13,9 +13,7 @@ import org.shithackers.shitdiscordserver.websocket.model.WSServerChannelMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ServerChannelService {
@@ -74,11 +72,12 @@ public class ServerChannelService {
         
     }
     
-    public ServerChannel saveRest(ServerChannel serverChannel) {
+    public Map<String, Object> save(int serverId, ServerChannel serverChannel) {
+        serverChannel.setServer(serverRepo.findById(serverId).orElse(null));
         serverChannel.setCreatedAt(new Date());
         serverChannelRepo.save(serverChannel);
         
-        return serverChannel;
+        return collectChannelToMap(serverChannel);
     }
     
     public void deleteServerChannel(ServerChannel serverChannel) {
@@ -109,5 +108,30 @@ public class ServerChannelService {
         if (server != null && serverChannel != null && message != null) {
             serverChannel.getServerChannelMessages().remove(message);
         }
+    }
+    
+    public List<Map<String, Object>> getServerChannels(int serverId) {
+        Server server = serverRepo.findById(serverId).orElse(null);
+        if (server != null) {
+            List<Map<String, Object>> list = new ArrayList<>();
+            List<ServerChannel> channels = serverChannelRepo.findAllByServer(server);
+            for (ServerChannel serverChannel : channels) {
+                list.add(collectChannelToMap(serverChannel));
+            }
+            return list;
+        }
+        return null;
+    }
+    
+    private Map<String, Object> collectChannelToMap(ServerChannel serverChannel) {
+        Map<String, Object> channel = new LinkedHashMap<>();
+        channel.put("id", serverChannel.getId());
+        channel.put("name", serverChannel.getName());
+        channel.put("type", serverChannel.getType());
+        channel.put("category", serverChannel.getCategory() != null
+                                ? serverChannel.getCategory().getName()
+                                : null);
+        channel.put("createdAt", serverChannel.getCreatedAt());
+        return channel;
     }
 }

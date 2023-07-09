@@ -19,7 +19,7 @@ public class ServerRolesController {
     }
     
     @GetMapping("/roles")
-    public List<ServerRole> showRoles(@PathVariable int serverId) {
+    public List<Map<String, Object>> showRoles(@PathVariable int serverId) {
         return serverRoleService.getServerRoles(serverId);
     }
     
