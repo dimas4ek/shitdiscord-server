@@ -15,11 +15,14 @@ import org.shithackers.shitdiscordserver.repo.server.ServerChannelMessageRepo;
 import org.shithackers.shitdiscordserver.repo.server.ServerMemberRepo;
 import org.shithackers.shitdiscordserver.repo.server.ServerRepo;
 import org.shithackers.shitdiscordserver.repo.user.UserRepo;
+import org.shithackers.shitdiscordserver.service.server.ServerService;
+import org.shithackers.shitdiscordserver.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.sql.SQLException;
+import java.util.*;
 
 @Service
 public class PeopleService {
@@ -29,17 +32,21 @@ public class PeopleService {
     private final FriendListRepo friendListRepo;
     private final FriendRequestRepo friendRequestRepo;
     private final ServerRepo serverRepo;
+    private final ServerService serverService;
+    private final FriendService friendService;
     private final ServerMemberRepo serverMemberRepo;
     private final ServerChannelMessageRepo serverChannelMessageRepo;
     
     @Autowired
-    public PeopleService(UserRepo userRepo, ChatRepo chatRepo, ChatMessageRepo chatMessageRepo, FriendListRepo friendListRepo, FriendRequestRepo friendRequestRepo, ServerRepo serverRepo, ServerMemberRepo serverMemberRepo, ServerChannelMessageRepo serverChannelMessageRepo) {
+    public PeopleService(UserRepo userRepo, ChatRepo chatRepo, ChatMessageRepo chatMessageRepo, FriendListRepo friendListRepo, FriendRequestRepo friendRequestRepo, ServerRepo serverRepo, ServerService serverService, FriendService friendService, ServerMemberRepo serverMemberRepo, ServerChannelMessageRepo serverChannelMessageRepo) {
         this.userRepo = userRepo;
         this.chatRepo = chatRepo;
         this.chatMessageRepo = chatMessageRepo;
         this.friendListRepo = friendListRepo;
         this.friendRequestRepo = friendRequestRepo;
         this.serverRepo = serverRepo;
+        this.serverService = serverService;
+        this.friendService = friendService;
         this.serverMemberRepo = serverMemberRepo;
         this.serverChannelMessageRepo = serverChannelMessageRepo;
     }
@@ -50,6 +57,36 @@ public class PeopleService {
     
     public User getOneUser(int id) {
         return userRepo.findById(id).orElse(null);
+    }
+    
+    public List<Map<String, Object>> getMutualServers(User user) {
+        
+        List<Server> userServers = serverRepo.findAllByMembersPerson(user);
+        List<Server> myServers = serverRepo.findAllByMembersPerson(AuthUtils.getPerson());
+        
+        List<Server> mutualServers = new ArrayList<>(myServers.stream().filter(userServers::contains).toList());
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (Server server : mutualServers) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("id", server.getId());
+            map.put("name", server.getName());
+            map.put("friendServerUsername", serverMemberRepo.findByPerson(user).getServerUsername());
+            list.add(map);
+        }
+        return list;
+    }
+    
+    public List<User> getMutualFriends(User user) throws SQLException {
+        List<User> userFriends = friendService.getFriendList(user);
+        List<User> myFriends = friendService.getFriendList(Objects.requireNonNull(AuthUtils.getPerson()));
+        List<User> mutualFriends = new ArrayList<>();
+        
+        for (User friend : myFriends) {
+            if (userFriends.contains(friend)) {
+                mutualFriends.add(friend);
+            }
+        }
+        return mutualFriends;
     }
     
     @Transactional

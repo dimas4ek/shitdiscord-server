@@ -35,7 +35,7 @@ public class FriendController {
             result.put("friendRequests", map);
             
             try {
-                result.put("friendList", friendService.getFriendList());
+                result.put("friendList", friendService.getFriendList(AuthUtils.getPerson()));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

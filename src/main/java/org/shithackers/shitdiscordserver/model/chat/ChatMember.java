@@ -24,7 +24,7 @@ public class ChatMember {
     @JoinColumn(name = "channel_id", referencedColumnName = "id")
     private Chat chat;
     
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private User person;
 }

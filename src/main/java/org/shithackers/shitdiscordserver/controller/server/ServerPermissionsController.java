@@ -1,4 +1,4 @@
-package org.shithackers.shitdiscordserver.controller;
+package org.shithackers.shitdiscordserver.controller.server;
 
 import org.shithackers.shitdiscordserver.payload.request.ServerRolePermissionRequest;
 import org.shithackers.shitdiscordserver.service.server.ServerRoleService;

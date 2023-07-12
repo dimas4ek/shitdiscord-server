@@ -21,11 +21,21 @@ public class ServerMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
+    @Column(name = "server_username")
+    private String serverUsername;
+    
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_id", referencedColumnName = "id")
     private Server server;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private User person;
+    
+    @Column(name = "join_date")
+    private Date joinDate;
     
     @JsonIgnore
     @ManyToMany(targetEntity = ServerRole.class, cascade = CascadeType.ALL)
@@ -35,11 +45,4 @@ public class ServerMember {
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<ServerRole> roles;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", referencedColumnName = "id")
-    private User person;
-
-    @Column(name = "join_date")
-    private Date joinDate;
 }

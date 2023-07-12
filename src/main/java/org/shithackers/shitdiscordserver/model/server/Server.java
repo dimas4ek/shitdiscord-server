@@ -23,7 +23,7 @@ public class Server {
 
     private String name;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private User creator;
     
@@ -38,7 +38,10 @@ public class Server {
     
     @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServerRole> roles;
-
+    
+    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BannedServerMember> bannedMembers;
+    
     @Column(name = "created_at")
     private Date createdAt;
 }

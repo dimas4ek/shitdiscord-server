@@ -1,8 +1,6 @@
 package org.shithackers.shitdiscordserver.websocket.controller;
 
 import org.shithackers.shitdiscordserver.model.chat.ChatMessage;
-import org.shithackers.shitdiscordserver.model.server.Server;
-import org.shithackers.shitdiscordserver.model.server.ServerChannel;
 import org.shithackers.shitdiscordserver.model.server.ServerChannelMessage;
 import org.shithackers.shitdiscordserver.service.chat.ChatMessageService;
 import org.shithackers.shitdiscordserver.service.chat.ChatService;
@@ -15,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -51,8 +50,8 @@ public class RestMessageController {
     public ResponseEntity<ServerChannelMessage>
     postServerChannelMessage(@PathVariable int serverId,
                              @PathVariable int serverChannelId,
-                             @RequestParam String message) {
-        return new ResponseEntity<>(serverChannelService.sendMessageRest(serverId, serverChannelId, AuthUtils.getPerson(), message), HttpStatus.CREATED);
+                             @RequestBody String message) {
+        return new ResponseEntity<>(serverChannelService.sendMessageRest(serverId, serverChannelId, message), HttpStatus.CREATED);
     }
     
     @DeleteMapping("/servers/{serverId}/{serverChannelId}/{messageId}")
@@ -64,13 +63,7 @@ public class RestMessageController {
     
     @GetMapping("/servers/{serverId}/{serverChannelId}/messages")
     @ResponseBody
-    public Map<String, Object> serverChannelMessages(@PathVariable int serverId, @PathVariable int serverChannelId) {
-        Server server = serverService.getServer(serverId);
-        ServerChannel serverChannel = serverChannelService.getServerChannel(server, serverChannelId);
-        
-        Map<String, Object> map = new HashMap<>();
-        map.put("messages", serverChannel.getServerChannelMessages());
-
-        return map;
+    public List<Map<String, Object>> serverChannelMessages(@PathVariable int serverId, @PathVariable int serverChannelId) {
+        return serverChannelService.getServerChannelMessagesRest(serverId, serverChannelId);
     }
 }

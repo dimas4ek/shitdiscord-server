@@ -1,14 +1,8 @@
 package org.shithackers.shitdiscordserver.service.server;
 
-import org.shithackers.shitdiscordserver.model.server.Server;
-import org.shithackers.shitdiscordserver.model.server.ServerChannel;
-import org.shithackers.shitdiscordserver.model.server.ServerChannelCategory;
-import org.shithackers.shitdiscordserver.model.server.ServerChannelMessage;
-import org.shithackers.shitdiscordserver.model.user.User;
-import org.shithackers.shitdiscordserver.repo.server.ServerChannelCategoryRepo;
-import org.shithackers.shitdiscordserver.repo.server.ServerChannelMessageRepo;
-import org.shithackers.shitdiscordserver.repo.server.ServerChannelRepo;
-import org.shithackers.shitdiscordserver.repo.server.ServerRepo;
+import org.shithackers.shitdiscordserver.model.server.*;
+import org.shithackers.shitdiscordserver.repo.server.*;
+import org.shithackers.shitdiscordserver.utils.AuthUtils;
 import org.shithackers.shitdiscordserver.websocket.model.WSServerChannelMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,13 +15,17 @@ public class ServerChannelService {
     private final ServerChannelCategoryRepo serverChannelCategoryRepo;
     private final ServerChannelMessageRepo serverChannelMessageRepo;
     private final ServerRepo serverRepo;
+    private final ServerMemberRepo serverMemberRepo;
+    private final ServerMemberService serverMemberService;
     
     @Autowired
-    public ServerChannelService(ServerChannelRepo serverChannelRepo, ServerChannelCategoryRepo serverChannelCategoryRepo, ServerChannelMessageRepo serverChannelMessageRepo, ServerRepo serverRepo) {
+    public ServerChannelService(ServerChannelRepo serverChannelRepo, ServerChannelCategoryRepo serverChannelCategoryRepo, ServerChannelMessageRepo serverChannelMessageRepo, ServerRepo serverRepo, ServerMemberRepo serverMemberRepo, ServerMemberService serverMemberService) {
         this.serverChannelRepo = serverChannelRepo;
         this.serverChannelCategoryRepo = serverChannelCategoryRepo;
         this.serverChannelMessageRepo = serverChannelMessageRepo;
         this.serverRepo = serverRepo;
+        this.serverMemberRepo = serverMemberRepo;
+        this.serverMemberService = serverMemberService;
     }
     
     public ServerChannel getServerChannel(Server server, int channelId) {
@@ -38,9 +36,10 @@ public class ServerChannelService {
         return serverChannelRepo.findByServerAndId(server, channelId);
     }
     
-    public ServerChannelMessage sendMessageRest(int serverId, int serverChannelId, User sender, String message) {
+    public ServerChannelMessage sendMessageRest(int serverId, int serverChannelId, String message) {
         Server server = serverRepo.findById(serverId).orElse(null);
         ServerChannel serverChannel = serverChannelRepo.findByServerAndId(server, serverChannelId);
+        ServerMember sender = serverMemberRepo.findByPerson(AuthUtils.getPerson());
         
         ServerChannelMessage serverChannelMessage = new ServerChannelMessage();
         serverChannelMessage.setServer(server);
@@ -92,13 +91,28 @@ public class ServerChannelService {
             WSServerChannelMessage wsServerChannelMessage = new WSServerChannelMessage(
                 serverChannelMessage.getServer().getId(),
                 serverChannelMessage.getId(),
-                serverChannelMessage.getSender().getUsername(),
+                serverChannelMessage.getSender().getPerson().getUsername(),
                 serverChannelMessage.getMessage(),
                 serverChannelMessage.getCreatedAt()
             );
             wsServerChannelMessages.add(wsServerChannelMessage);
         }
         return wsServerChannelMessages;
+    }
+    
+    public List<Map<String, Object>> getServerChannelMessagesRest(int serverId, int serverChannelId) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        List<ServerChannelMessage> messages = serverChannelMessageRepo.findAllByServerIdAndServerChannelId(serverId, serverChannelId);
+        for (ServerChannelMessage message : messages) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("id", message.getId());
+            map.put("sender", serverMemberService.getServerMemberInfo(serverId, message.getSender().getId()));
+            map.put("message", message.getMessage());
+            map.put("createdAt", message.getCreatedAt());
+            
+            list.add(map);
+        }
+        return list;
     }
     
     public void deleteServerChannelMessage(int serverId, int serverChannelId, int messageId) {

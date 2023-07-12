@@ -35,17 +35,19 @@ public class ServerRoleService {
         Server server = serverRepo.findById(serverId).orElse(null);
         if (server != null) {
             return serverRoleRepo.findAllByServerId(serverId).stream()
-                .map(role -> {
-                    Map<String, Object> map = new LinkedHashMap<>();
-                    map.put("id", role.getId());
-                    map.put("name", role.getName());
-                    map.put("color", role.getColor());
-                    map.put("permissions", getRolePermissions(serverId, role.getId()));
-                    return map;
-                })
+                .map(role -> getRoles(serverId, role))
                 .collect(Collectors.toList());
         }
         return null;
+    }
+    
+    private Map<String, Object> getRoles(int serverId, ServerRole role) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", role.getId());
+        map.put("name", role.getName());
+        map.put("color", role.getColor());
+        map.put("permissions", getRolePermissions(serverId, role.getId()));
+        return map;
     }
     
     @Transactional
@@ -85,36 +87,6 @@ public class ServerRoleService {
                 }
             }
         }
-    }
-    
-    public Map<String, Object> showMemberRoles(int serverId, int serverMemberId) {
-        Optional<Server> optionalServer = serverRepo.findById(serverId);
-        if (optionalServer.isPresent()) {
-            ServerMember member = serverMemberRepo.findById(serverMemberId).orElse(null);
-            if (member != null) {
-                Map<String, Object> memberMap = new HashMap<>();
-                
-                List<Map<String, Object>> rolesList = member.getRoles().stream()
-                    .map(role -> showRole(serverId, role))
-                    .collect(Collectors.toList());
-                
-                memberMap.put("serverRoles", rolesList);
-                memberMap.put("user", member.getPerson());
-                
-                Map<String, Object> result = new HashMap<>();
-                result.put("serverId", serverId);
-                result.put("member", memberMap);
-                
-                return result;
-            }
-            
-            return Map.of(
-                "serverId", serverId,
-                "member", "null"
-            );
-        }
-        
-        return Map.of("server", "null");
     }
     
     @Transactional
@@ -189,5 +161,18 @@ public class ServerRoleService {
         roleMap.put("name", role.getName());
         roleMap.put("permissions", getRolePermissions(serverId, role.getId()));
         return roleMap;
+    }
+    
+    public List<Map<String, Object>> getMemberRoles(int serverId, int serverMemberId) {
+        Server server = serverRepo.findById(serverId).orElse(null);
+        ServerMember member = serverMemberRepo.findByServerIdAndId(serverId, serverMemberId);
+        List<Map<String, Object>> list = new ArrayList<>();
+        if (server != null && member != null) {
+            for (ServerRole role : member.getRoles()) {
+                list.add(getRoles(serverId, role));
+            }
+            return list;
+        }
+        return null;
     }
 }

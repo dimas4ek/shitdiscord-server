@@ -32,9 +32,9 @@ public class FriendService {
         this.chatService = chatService;
     }
     
-    public List<User> getFriendList() throws SQLException {
+    public List<User> getFriendList(User user) throws SQLException {
         List<User> friends = new ArrayList<>();
-        for (FriendList friend : friendListRepo.findAllByPersonId(AuthUtils.getPersonId())) {
+        for (FriendList friend : friendListRepo.findAllByPersonId(user.getId())) {
             friends.add(peopleRepo.findById(friend.getFriend().getId()).orElse(null));
         }
         

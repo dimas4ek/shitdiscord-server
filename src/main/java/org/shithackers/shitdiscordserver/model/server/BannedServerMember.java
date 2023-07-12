@@ -6,36 +6,35 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.shithackers.shitdiscordserver.model.user.User;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "server_channel_messages")
+@Table(name = "banned_server_members")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class ServerChannelMessage {
+public class BannedServerMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    
+    @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id")
-    private ServerMember sender;
+    private User user;
+    
+    @Column(name = "ban_reason")
+    private String banReason;
+    
+    private int banDuration;
+    
+    @Column(name = "banned_at")
+    private Date bannedAt;
     
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_id", referencedColumnName = "id")
     private Server server;
-    
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "server_channel_id", referencedColumnName = "id")
-    private ServerChannel serverChannel;
-
-    private String message;
-
-    @Column(name = "created_at")
-    private Date createdAt;
 }

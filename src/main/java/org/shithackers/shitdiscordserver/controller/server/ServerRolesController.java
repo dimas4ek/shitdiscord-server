@@ -1,6 +1,7 @@
-package org.shithackers.shitdiscordserver.controller;
+package org.shithackers.shitdiscordserver.controller.server;
 
 import org.shithackers.shitdiscordserver.model.server.ServerRole;
+import org.shithackers.shitdiscordserver.service.server.ServerMemberService;
 import org.shithackers.shitdiscordserver.service.server.ServerRoleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,11 @@ import java.util.Map;
 @RequestMapping("/api/v1/servers/{serverId}")
 public class ServerRolesController {
     private final ServerRoleService serverRoleService;
+    private final ServerMemberService serverMemberService;
     
-    public ServerRolesController(ServerRoleService serverRoleService) {
+    public ServerRolesController(ServerRoleService serverRoleService, ServerMemberService serverMemberService) {
         this.serverRoleService = serverRoleService;
+        this.serverMemberService = serverMemberService;
     }
     
     @GetMapping("/roles")
@@ -40,7 +43,7 @@ public class ServerRolesController {
     
     @GetMapping("/{serverMemberId}/roles")
     public Map<String, Object> showMemberRoles(@PathVariable int serverId, @PathVariable int serverMemberId) {
-        return serverRoleService.showMemberRoles(serverId, serverMemberId);
+        return serverMemberService.getServerMemberInfo(serverId, serverMemberId);
     }
     
     @PutMapping("/{serverMemberId}/roles/{roleId}")
@@ -50,7 +53,7 @@ public class ServerRolesController {
         serverRoleService.addRoleToMember(serverId, serverMemberId, roleId);
         
         return new ResponseEntity<>(
-            serverRoleService.showMemberRoles(serverId, serverMemberId),
+            serverMemberService.getServerMemberInfo(serverId, serverMemberId),
             HttpStatus.CREATED
         );
     }
@@ -62,7 +65,7 @@ public class ServerRolesController {
         serverRoleService.removeRoleFromMember(serverId, serverMemberId, roleId);
         
         return ResponseEntity.ok(
-            serverRoleService.showMemberRoles(serverId, serverMemberId)
+            serverMemberService.getServerMemberInfo(serverId, serverMemberId)
         );
     }
 }
